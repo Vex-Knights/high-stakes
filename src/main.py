@@ -38,6 +38,7 @@ right_drive = [
 ]
 
 stakeholder = Pneumatics(brain.three_wire_port.a)
+arm_sm = Pneumatics(brain.three_wire_port.b)
 
 def pow(base, exponent):
     res = 1
@@ -77,6 +78,10 @@ robotState = {
     'stakeholder': {
         'pressed': False,
         'on': False,
+    },
+    'arm_sm': {
+        'pressed': False,
+        'on': False,
     }
 }
 
@@ -107,15 +112,27 @@ while True:
         'stakeholder': {
             'pressed': robotState['stakeholder']['pressed'],
             'on': robotState['stakeholder']['on'],
+        },
+        'arm_sm': {
+            'pressed': robotState['arm_sm']['pressed'],
+            'on': robotState['arm_sm']['on'],
         }
+
     }
 
-    if controller.buttonL2.pressing():
+    if controller.buttonB.pressing():
         if not robotState['stakeholder']['pressed']:
             robotState['stakeholder']['pressed'] = True
             robotState['stakeholder']['on'] = not robotState['stakeholder']['on']
     else:
         robotState['stakeholder']['pressed'] = False
+
+    if controller.buttonL2.pressing():
+        if not robotState['arm_sm']['pressed']:
+            robotState['arm_sm']['pressed'] = True
+            robotState['arm_sm']['on'] = not robotState['arm_sm']['on']
+    else:
+        robotState['arm_sm']['pressed'] = False
 
     if controller.buttonR2.pressing():
         if not robotState['intake']['toggle']['pressed']:
@@ -238,6 +255,11 @@ while True:
         stakeholder.open()
     else:
         stakeholder.close()
+
+    if robotState['arm_sm']['on']:
+        arm_sm.open()
+    else:
+        arm_sm.close()
 
     # Apply motor actions based on robot state
     # Clear the screen and print the current robot state
