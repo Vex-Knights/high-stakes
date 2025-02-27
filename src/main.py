@@ -28,13 +28,13 @@ intake = {
 }
 
 # Robot configuration code
-left_drive = [
-    Motor(Ports.PORT16, GearSetting.RATIO_18_1, False),
-    # Motor(Ports.PORT17, GearSetting.RATIO_18_1, False),
-]
 right_drive = [
-    Motor(Ports.PORT18, GearSetting.RATIO_18_1, True),
-    Motor(Ports.PORT19, GearSetting.RATIO_18_1, True),
+    Motor(Ports.PORT15, GearSetting.RATIO_18_1, True),
+    Motor(Ports.PORT17, GearSetting.RATIO_18_1, True),
+]
+left_drive = [
+    Motor(Ports.PORT18, GearSetting.RATIO_18_1, False),
+    Motor(Ports.PORT13, GearSetting.RATIO_18_1, False),
 ]
 
 stakeholder = Pneumatics(brain.three_wire_port.a)
@@ -176,8 +176,8 @@ while True:
             robotState['intake']['direction'] = FORWARD
 
     # This value is used later on, so no ABS
-    left_axis = controller.axis4.position() # controls rotatioon
-    right_axis = controller.axis2.position()
+    left_axis = controller.axis1.position() # controls rotatioon
+    right_axis = controller.axis3.position()
 
     # Handle throttle
     if right_axis > 0:
@@ -202,11 +202,11 @@ while True:
         if wheel_dcl < 0.4:
             wheel_dcl = 0.4
 
-        if left_axis < 0: # right
+        if left_axis > 0: # right
             robotState['right_drive_train']['speed'] *= (1 + (abs(left_axis)/100))
             robotState['left_drive_train']['speed'] *= wheel_dcl
 
-        elif left_axis > 0: # left
+        elif left_axis < 0: # left
             robotState['left_drive_train']['speed'] *= (1 + (abs(left_axis)/100))
             robotState['right_drive_train']['speed'] *= wheel_dcl
     else:
